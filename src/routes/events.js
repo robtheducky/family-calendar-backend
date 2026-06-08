@@ -96,6 +96,38 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /events/:id
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, date, start_time, end_time, location, notes, child, category, driver } = req.body;
+
+  if (!title || !date) {
+    return res.status(400).json({ error: 'title and date are required' });
+  }
+
+  try {
+    const { rows, rowCount } = await pool.query(
+      `UPDATE events
+         SET title=$1, date=$2, start_time=$3, end_time=$4,
+             location=$5, notes=$6, child=$7, category=$8, driver=$9
+       WHERE id=$10
+       RETURNING *`,
+      [
+        title, date,
+        start_time || null, end_time || null,
+        location || null, notes || null,
+        child || null, category || null, driver || null,
+        id,
+      ]
+    );
+    if (rowCount === 0) return res.status(404).json({ error: 'Event not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('PUT /events error:', err);
+    res.status(500).json({ error: 'Failed to update event' });
+  }
+});
+
 // DELETE /events/:id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
