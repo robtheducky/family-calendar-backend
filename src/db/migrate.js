@@ -15,7 +15,7 @@ async function migrate() {
         notes         TEXT,
         added_by      TEXT,
         added_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        source        TEXT        NOT NULL DEFAULT 'manual' CHECK (source IN ('email', 'manual')),
+        source        TEXT        NOT NULL DEFAULT 'manual' CHECK (source IN ('email', 'manual', 'sms')),
         child         TEXT,
         category      TEXT,
         driver        TEXT,
@@ -29,6 +29,12 @@ async function migrate() {
     await client.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS category TEXT`);
     await client.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS driver TEXT`);
     await client.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS recurrence_id UUID`);
+
+    // Update source constraint if it exists (dropping and re-adding is simplest)
+    await client.query(`
+      ALTER TABLE events DROP CONSTRAINT IF EXISTS events_source_check;
+      ALTER TABLE events ADD CONSTRAINT events_source_check CHECK (source IN ('email', 'manual', 'sms'));
+    `);
 
     console.log('Migration complete.');
   } finally {
