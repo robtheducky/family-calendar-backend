@@ -1,6 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const pool = require('../db/pool');
-const { sendSms } = require('./sms');
+const { broadcastSms } = require('./sms');
 
 const anthropic = new Anthropic();
 
@@ -59,10 +59,8 @@ ${eventsList}`,
   });
 
   const brief = response.content[0].text.trim();
-  const phones = [process.env.FAMILY_PHONE_1, process.env.FAMILY_PHONE_2].filter(Boolean);
-  await Promise.all(phones.map((phone) => sendSms(phone, brief)));
-
-  console.log(`Weekly brief sent to ${phones.length} number(s):\n${brief}`);
+  await broadcastSms(brief);
+  console.log(`Weekly brief sent:\n${brief}`);
   return brief;
 }
 
@@ -93,10 +91,8 @@ ${eventsList}`,
   });
 
   const brief = response.content[0].text.trim();
-  const phones = [process.env.FAMILY_PHONE_1, process.env.FAMILY_PHONE_2].filter(Boolean);
-  await Promise.all(phones.map((phone) => sendSms(phone, brief)));
-
-  console.log(`Daily brief sent to ${phones.length} number(s):\n${brief}`);
+  await broadcastSms(brief);
+  console.log(`Daily brief sent:\n${brief}`);
   return brief;
 }
 

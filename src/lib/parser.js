@@ -39,7 +39,7 @@ async function parseMessageToEvent(content, context = '') {
   const trimmedContent = content.slice(0, 4000);
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20240620',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1024,
     tools: TOOLS,
     tool_choice: { type: 'any' },
