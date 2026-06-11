@@ -43,4 +43,4 @@ function nameForPhone(phone) {
   return 'Unknown';
 }
 
-module.exports = { sendSms, phoneForEmail, isAuthorizedPhone, nameForPhone };
+module.exports = { sendSms, phoneForEmail, isAuthorizedPhone, nameForPhone, broadcastSms };

@@ -36,7 +36,22 @@ const TOOLS = [
 ];
 
 async function parseMessageToEvent(content, context = '') {
-  // ... (rest of function same until toolUse check)
+  // Trim content to keep tokens reasonable
+  const trimmedContent = content.slice(0, 4000);
+
+  const response = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20240620',
+    max_tokens: 1024,
+    tools: TOOLS,
+    tool_choice: { type: 'any' },
+    messages: [
+      {
+        role: 'user',
+        content: `Extract the calendar event from this message. If it contains a clear event with at least a title and date, call save_event. Otherwise call cannot_parse.\n\nContext: ${context}\n\nMessage:\n${trimmedContent}`,
+      },
+    ],
+  });
+
   const toolUse = response.content.find((b) => b.type === 'tool_use');
   if (!toolUse) return null;
   
