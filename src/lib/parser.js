@@ -36,7 +36,6 @@ const TOOLS = [
 ];
 
 async function parseMessageToEvent(content, context = '') {
-  // Trim content to keep tokens reasonable
   const trimmedContent = content.slice(0, 4000);
 
   const response = await anthropic.messages.create({
