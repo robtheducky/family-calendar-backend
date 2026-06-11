@@ -45,7 +45,7 @@ async function sendWeeklyBrief() {
     : 'No events on the calendar.';
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20240620',
+    model: 'claude-sonnet-4-6',
     max_tokens: 512,
     messages: [
       {
@@ -79,7 +79,7 @@ async function sendDailyBrief() {
   const eventsList = events.map(formatEventLine).join('\n');
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20240620',
+    model: 'claude-sonnet-4-6',
     max_tokens: 400,
     messages: [
       {
