@@ -101,7 +101,9 @@ router.post('/sms', express.urlencoded({ extended: false }), async (req, res) =>
     await broadcastSms(text);
   } catch (err) {
     console.error('SMS webhook error:', err);
-    await sendSms(From, "Something went wrong on our end. Try sending that again?");
+    // Log the full error object to help debugging on Railway
+    console.error('Full Error details:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
+    await sendSms(From, `Something went wrong on our end, ${senderName}. Error: ${err.message}`);
   }
 });
 
