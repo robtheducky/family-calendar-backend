@@ -35,11 +35,14 @@ function isAuthorizedPhone(phone) {
 }
 
 function nameForPhone(phone) {
+  if (!phone) return 'Unknown';
   const p = phone.replace(/\D/g, '');
-  const p1 = process.env.FAMILY_PHONE_1?.replace(/\D/g, '');
-  const p2 = process.env.FAMILY_PHONE_2?.replace(/\D/g, '');
-  if (p === p1) return 'Rob';
-  if (p === p2) return 'Maddie';
+  const p1 = (process.env.FAMILY_PHONE_1 || '').replace(/\D/g, '');
+  const p2 = (process.env.FAMILY_PHONE_2 || '').replace(/\D/g, '');
+  
+  const last10 = (num) => num.slice(-10);
+  if (p.length >= 10 && last10(p) === last10(p1)) return 'Rob';
+  if (p.length >= 10 && last10(p) === last10(p2)) return 'Maddie';
   return 'Unknown';
 }
 
